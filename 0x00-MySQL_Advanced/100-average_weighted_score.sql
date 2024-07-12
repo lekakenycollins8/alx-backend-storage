@@ -1,8 +1,9 @@
 -- creates a stored procedure that computes and stores average score for student
 DELIMITER $$
-CREATE PROCEDURE ComputeAverageScoreForUser (IN user_id INT)
+DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUser;
+CREATE PROCEDURE ComputeAverageWeightedScoreForUser (IN user_id INT)
 BEGIN
-    UPDATE users SET average_score = (SELECT
+	UPDATE users SET average_score = (SELECT
 	SUM(corrections.score * projects.weight) / SUM(projects.weight)
 	FROM corrections
 	INNER JOIN projects
