@@ -47,11 +47,11 @@ def count_calls(method: Callable) -> Callable:
 
 def call_history(method: Callable) -> Callable:
     """call history decorator with inputs and outputs"""
-    key = method.__qualname__
-
+    
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrapper function"""
+        key = method.__qualname__
         input = str(args)
         self._redis.rpush(key + ":inputs", input)
         output = str(method(self, *args, **kwargs))
@@ -67,9 +67,9 @@ def replay(fn: Callable) -> None:
     count = r.get(key).decode('utf-8')
     inputs = r.lrange(key + ":inputs", 0, -1)
     outputs = r.lrange(key + ":outputs", 0, -1)
-    print(f"{key} was called {count} times:")
+    print("{} was called {} times:".format(key, count))
     for i, o in zip(inputs, outputs):
-        print(f"{key}(*{i.decode('utf-8')}) -> {o.decode('utf-8')}")
+        print("{}(*{}) -> {}".format(key, i.decode('utf-8'), o.decode('utf-8')))
 
 
 class Cache:
